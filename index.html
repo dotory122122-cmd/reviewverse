@@ -270,13 +270,7 @@
   <div class="ad-wrap-inner">
     <div class="ad-label">AD</div>
     <script>
-      new PartnerCoupang.G({
-        id: 856674,
-        template: "carousel",
-        trackingCode: "AF8712140",
-        width: "680",
-        height: "140"
-      });
+      new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"680","height":"140","tsource":""});
     </script>
   </div>
 </div>
@@ -324,13 +318,7 @@
   <div class="ad-wrap-inner">
     <div class="ad-label">AD</div>
     <script>
-      new PartnerCoupang.G({
-        id: 856675,
-        template: "carousel",
-        trackingCode: "AF8712140",
-        width: "680",
-        height: "140"
-      });
+      new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"680","height":"140","tsource":""});
     </script>
   </div>
 </div>
@@ -457,6 +445,21 @@ function setTier(t) {
   });
   render();
 }
+const adHTML = `
+  <tr class="ad-row">
+    <td colspan="5" style="padding:0; border:none;">
+      <div class="ad-wrap" style="margin:0;">
+        <div class="ad-wrap-inner">
+          <div class="ad-label">AD</div>
+          <script>new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"680","height":"140","tsource":""});<\/script>
+          <div class="ad-notice">이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</div>
+        </div>
+      </div>
+    </td>
+  </tr>`;
+
+const adAfter = new Set(['A', 'C', 'N']); // S끝→A시작, B끝→C시작, C끝→N시작 앞에 삽입
+
 function render() {
   const kw = document.getElementById('kw').value.trim().toLowerCase();
   const filtered = ranked.filter(d => {
@@ -470,14 +473,23 @@ function render() {
     tbody.innerHTML = '<tr><td colspan="5" class="empty">검색 결과가 없습니다.</td></tr>';
     return;
   }
-  tbody.innerHTML = filtered.map(d => `
+  let html = '';
+  let prevTier = null;
+  filtered.forEach(d => {
+    if (prevTier && prevTier !== d.tier && adAfter.has(d.tier) && !activeTier) {
+      html += adHTML;
+    }
+    html += `
     <tr>
       <td class="rank">${d.rank}</td>
       <td><span class="tier-badge badge-${d.tier}">${tierMap[d.tier]}</span></td>
       <td class="site-name">${d.name}</td>
       <td class="site-desc">${d.desc}</td>
       <td>${d.url ? `<a class="site-link" href="${d.url}" target="_blank" rel="noopener">바로가기 →</a>` : '<span class="no-url">링크 미확인</span>'}</td>
-    </tr>`).join('');
+    </tr>`;
+    prevTier = d.tier;
+  });
+  tbody.innerHTML = html;
 }
 setTier('');
 </script>
