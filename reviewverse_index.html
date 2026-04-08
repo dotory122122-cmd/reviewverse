@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리뷰버스 — ReviewVerse</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Bebas+Neue&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+
+<!-- ✅ 쿠팡 파트너스 -->
+<script src="https://ads-partners.coupang.com/g.js"></script>
+
+<!-- ✅ 애드센스 | ca-pub-XXXXXXXXXXXXXXXX 를 본인 Publisher ID로 교체 후 주석 해제 -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+<style>
+  .ad-wrap {
+    background: #faf8ff;
+    border-top: 1px solid #ede8f5;
+    border-bottom: 1px solid #ede8f5;
+    padding: 10px 2rem;
+    text-align: center;
+  }
+  .ad-wrap-inner { max-width: 1200px; margin: 0 auto; }
+  .ad-label { font-size: 10px; color: #b0a8c4; letter-spacing: 0.1em; margin-bottom: 6px; }
+
+  :root {
+    --bg: #f8f6fc;
+    --surface: #ffffff;
+    --border: #ede8f5;
+    --text-primary: #1a1625;
+    --text-secondary: #6b6278;
+    --text-muted: #b0a8c4;
+    --accent: #7c4dbd;
+    --s-bg: #1a1625; --s-text: #f0ecff;
+    --a-bg: #5b2d9e; --a-text: #ede8ff;
+    --b-bg: #8b5cf6; --b-text: #faf8ff;
+    --c-bg: #ede8f5; --c-text: #4a3f60;
+    --etc-bg: #d8cff0; --etc-text: #3a2f55;
+    --naver-bg: #e8f5e2; --naver-text: #2a6620;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+
+  header {
+    background: linear-gradient(135deg, #0d0b14 0%, #1a1625 55%, #221340 100%);
+    color: #f0ecff; padding: 2.75rem 2rem 2.25rem; position: relative; overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 55% 90% at 85% 40%, rgba(124,77,189,0.22) 0%, transparent 65%),
+      radial-gradient(ellipse 30% 50% at 10% 80%, rgba(167,120,255,0.10) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .header-inner { max-width: 1200px; margin: 0 auto; position: relative; text-align: center; }
+
+  /* 로고 영역 */
+  .brand-wrap { display: flex; align-items: baseline; gap: 14px; margin-bottom: 0.65rem; flex-wrap: wrap; justify-content: center; }
+
+  .brand-ko {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    color: #f0ecff;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+
+  .brand-divider {
+    width: 1px; height: clamp(1.4rem, 3vw, 2rem);
+    background: rgba(167,120,255,0.25); align-self: center; flex-shrink: 0;
+  }
+
+  .brand-en {
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.1rem, 2.8vw, 1.8rem);
+    letter-spacing: 0.07em;
+    line-height: 1;
+    background: linear-gradient(100deg, #c084fc 0%, #a855f7 35%, #e879f9 70%, #c084fc 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* 태그라인 */
+  .brand-tag {
+    font-size: 12.5px; font-weight: 300; color: #6b5f85;
+    letter-spacing: 0.01em; line-height: 1.6; margin-bottom: 1.4rem;
+  }
+  .brand-tag em { font-style: normal; color: #9580b8; }
+
+  .header-search-wrap { position: relative; max-width: 1200px; width: 100%; margin: 0 auto; display: flex; gap: 0; }
+  .header-search-wrap input {
+    flex: 1; padding: 11px 16px 11px 42px;
+    border: 1px solid rgba(167,120,255,0.2); border-radius: 8px 0 0 8px;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 13px;
+    background: rgba(167,120,255,0.07); color: #f0ecff; outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    backdrop-filter: blur(6px);
+  }
+  .header-search-wrap input::placeholder { color: #5a5070; }
+  .header-search-wrap input:focus { border-color: #a855f7; background: rgba(167,120,255,0.12); }
+  .header-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #6b5f85; font-size: 14px; pointer-events: none; z-index: 1; }
+  .header-search-btn {
+    padding: 11px 22px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff; border: none; border-radius: 0 8px 8px 0;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: opacity 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .header-search-btn:hover { opacity: 0.88; }
+
+  .controls { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.75rem 2rem; position: sticky; top: 0; z-index: 100; }
+  .controls-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; }
+  .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .fbtn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border); font-family: 'Noto Sans KR', sans-serif; font-size: 12px; cursor: pointer; background: transparent; color: var(--text-secondary); transition: all 0.15s; }
+  .fbtn:hover { background: var(--bg); }
+  .fbtn.on-all  { background: var(--text-primary); color: #f0ecff; border-color: var(--text-primary); }
+  .fbtn.on-S    { background: var(--s-bg); color: var(--s-text); border-color: var(--s-bg); }
+  .fbtn.on-A    { background: var(--a-bg); color: var(--a-text); border-color: var(--a-bg); }
+  .fbtn.on-B    { background: var(--b-bg); color: var(--b-text); border-color: var(--b-bg); }
+  .fbtn.on-C    { background: var(--c-bg); color: var(--c-text); border-color: #d8cff0; }
+  .fbtn.on-N    { background: var(--naver-bg); color: var(--naver-text); border-color: #9ec98a; }
+  .fbtn.on-기타  { background: var(--etc-bg); color: var(--etc-text); border-color: var(--etc-bg); }
+  .fcnt {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    background: rgba(0,0,0,0.10); color: inherit;
+    border-radius: 8px; padding: 1px 6px; line-height: 1.5;
+    opacity: 0.8;
+  }
+  .fbtn.on-all .fcnt, .fbtn.on-S .fcnt, .fbtn.on-A .fcnt, .fbtn.on-B .fcnt { background: rgba(255,255,255,0.22); }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
+  .result-count { font-size: 12px; color: var(--text-muted); margin-bottom: 1rem; }
+  .legend { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  thead tr { background: var(--text-primary); }
+  th { text-align: left; padding: 11px 14px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #7a6e94; font-weight: 400; white-space: nowrap; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fbf9ff; }
+
+  .rank { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--text-muted); width: 38px; }
+  .tier-badge { display: inline-block; padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+  .badge-S     { background: var(--s-bg); color: var(--s-text); }
+  .badge-A     { background: var(--a-bg); color: var(--a-text); }
+  .badge-B     { background: var(--b-bg); color: var(--b-text); }
+  .badge-C     { background: var(--c-bg); color: var(--c-text); }
+  .badge-N     { background: var(--naver-bg); color: var(--naver-text); }
+  .badge-기타   { background: var(--etc-bg); color: var(--etc-text); }
+
+  .site-name { font-weight: 500; font-size: 13px; color: var(--text-primary); white-space: nowrap; }
+  .site-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; max-width: 400px; }
+  .site-link { display: inline-block; padding: 5px 12px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); text-decoration: none; font-size: 11px; font-weight: 500; white-space: nowrap; transition: all 0.15s; }
+  .site-link:hover { background: var(--accent); color: white; }
+  .no-url { font-size: 11px; color: var(--text-muted); }
+  .empty { text-align: center; padding: 4rem; color: var(--text-muted); }
+
+  footer { text-align: center; padding: 2rem; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); letter-spacing: 0.05em; }
+
+  @media (max-width: 768px) {
+    /* 헤더 */
+    header { padding: 1.75rem 1.25rem 1.5rem; }
+    .header-search-wrap { max-width: 100%; }
+    .brand-divider { display: none; }
+    .brand-wrap { gap: 8px; }
+    .header-search-btn { padding: 11px 14px; font-size: 12px; }
+
+    /* 광고 */
+    .ad-wrap { padding: 8px 1rem; overflow: hidden; }
+
+    /* 필터 바 — 가로 스크롤 */
+    .controls { padding: 0.6rem 0; }
+    .controls-inner { padding: 0 1rem; justify-content: flex-start; }
+    .filter-btns {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+      gap: 6px;
+      justify-content: flex-start;
+    }
+    .filter-btns::-webkit-scrollbar { display: none; }
+    .fbtn { white-space: nowrap; flex-shrink: 0; font-size: 11.5px; padding: 5px 10px; }
+
+    /* 본문 */
+    main { padding: 1rem 1rem 3rem; }
+
+    /* 레전드 숨김 */
+    .legend { display: none; }
+
+    /* result-count */
+    .result-count { font-size: 11px; margin-bottom: 0.75rem; }
+
+    /* ── 테이블 → 카드 변환 ── */
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display: none; }
+
+    tbody tr {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      padding: 14px;
+      position: relative;
+      box-shadow: 0 1px 4px rgba(90,40,180,0.05);
+    }
+    tbody tr:hover { background: #fbf9ff; }
+
+    td.rank {
+      position: absolute; top: 12px; right: 14px;
+      font-size: 13px; color: var(--text-muted);
+      width: auto; padding: 0; border: none;
+    }
+    tbody tr td:nth-child(2) { padding: 0 0 6px 0; border: none; }
+    td.site-name { font-size: 15px; font-weight: 700; padding: 0 0 4px 0; border: none; padding-right: 36px; }
+    td.site-desc { font-size: 12px; color: var(--text-secondary); max-width: 100%; padding: 0 0 10px 0; border: none; line-height: 1.55; }
+    tbody tr td:last-child { padding: 0; border: none; }
+    .site-link { display: inline-block; padding: 6px 16px; font-size: 12px; border-radius: 6px; }
+
+    footer { font-size: 10px; padding: 1.5rem 1rem; line-height: 1.8; }
+  }
+
+  @media (max-width: 380px) {
+    .brand-ko { font-size: 1.4rem; }
+    .brand-en { font-size: 1rem; }
+    .brand-tag { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand-wrap">
+      <span class="brand-ko">리뷰버스</span>
+      <div class="brand-divider"></div>
+      <span class="brand-en">ReviewVerse</span>
+    </div>
+    <p class="brand-tag">블로그·인스타·숏폼 체험단·리뷰 캠페인 통합 검색 플랫폼<em> · 2026년 기준</em></p>
+    <div class="header-search-wrap">
+      <span class="header-search-icon">🔍</span>
+      <input type="text" id="kw" placeholder="체험하고 싶은 캠페인 키워드를 입력하세요" oninput="render()" onkeydown="if(event.key==='Enter')render()">
+      <button class="header-search-btn" onclick="render()">검색</button>
+    </div>
+  </div>
+</header>
+
+<!-- ✅ 광고 1: 헤더 아래 쿠팡 파트너스 맞춤형 광고 -->
+<div class="ad-wrap">
+  <div class="ad-wrap-inner">
+    <div class="ad-label">AD</div>
+    <script>
+      new PartnerCoupang.G({
+        id: 856674,
+        template: "carousel",
+        trackingCode: "AF8712140",
+        width: "680",
+        height: "140"
+      });
+    </script>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="filter-btns">
+      <button class="fbtn on-all" id="btn-all"  onclick="setTier('')">전체 <span class="fcnt" id="fcnt-all"></span></button>
+      <button class="fbtn" id="btn-S"   onclick="setTier('S')">⭐ S티어 <span class="fcnt" id="fcnt-S"></span></button>
+      <button class="fbtn" id="btn-A"   onclick="setTier('A')">A티어 <span class="fcnt" id="fcnt-A"></span></button>
+      <button class="fbtn" id="btn-B"   onclick="setTier('B')">B티어 <span class="fcnt" id="fcnt-B"></span></button>
+      <button class="fbtn" id="btn-C"   onclick="setTier('C')">C티어 <span class="fcnt" id="fcnt-C"></span></button>
+      <button class="fbtn" id="btn-N"   onclick="setTier('N')">네이버카페/블로그 <span class="fcnt" id="fcnt-N"></span></button>
+      <button class="fbtn" id="btn-기타" onclick="setTier('기타')">모음/기타 <span class="fcnt" id="fcnt-기타"></span></button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#1a1625"></div>S티어 — MUV 100만+ 대형</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#5b2d9e"></div>A티어 — 활성화된 중형</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>B티어 — 특화 플랫폼</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d8cff0"></div>C티어 — 소규모·틈새</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9ec98a"></div>네이버 카페/블로그 운영</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d8cff0"></div>모음/기타</div>
+  </div>
+  <div class="result-count" id="count"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>등급</th>
+        <th>사이트명</th>
+        <th>특징</th>
+        <th>링크</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</main>
+
+<!-- ✅ 광고 2: 하단 쿠팡 파트너스 맞춤형 광고 -->
+<div class="ad-wrap">
+  <div class="ad-wrap-inner">
+    <div class="ad-label">AD</div>
+    <script>
+      new PartnerCoupang.G({
+        id: 856675,
+        template: "carousel",
+        trackingCode: "AF8712140",
+        width: "680",
+        height: "140"
+      });
+    </script>
+  </div>
+</div>
+
+<!-- ✅ 광고 3: 애드센스 — 심사 통과 후 아래 주석 해제 + Publisher ID / slot ID 교체
+<div class="ad-wrap">
+  <div class="ad-wrap-inner">
+    <div class="ad-label">AD</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="XXXXXXXXXX"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+</div>
+-->
+
+<footer>리뷰버스 ReviewVerse · 체험단 사이트 통합 목록 · 2026년 기준 · 일부 소규모 사이트 URL은 변경될 수 있습니다</footer>
+
+<script>
+const data = [
+  // ─── S티어 ───
+  {tier:'S', name:'리뷰노트',       desc:'MUV 약 320만, 국내 트래픽 1위. 광고주 무료 등록, 캠페인 수 최다. 블로그·인스타·유튜브 통합', url:'https://www.reviewnote.co.kr/'},
+  {tier:'S', name:'레뷰 (REVU)',    desc:'MUV 약 250만, 가장 오래된 1세대 대형 플랫폼. 운영 퀄리티·회원수 압도적. 블로그·인스타·유튜브·숏폼', url:'https://www.revu.net/'},
+  {tier:'S', name:'디너의여왕',     desc:'MUV 상위권. 맛집·카페 방문형 특화 대형 플랫폼. 푸드 분야 국내 1위',                          url:'https://dinnerqueen.net/'},
+  {tier:'S', name:'리뷰플레이스',   desc:'MUV 4위. 구매형 체험단 다수. 숏폼(네이버클립·릴스) 체험단도 운영',                            url:'https://www.reviewplace.co.kr/'},
+  {tier:'S', name:'서울오빠',       desc:'MUV 상위권. 맛집·기자단 다수. 1등 크리에이터 중개 플랫폼',                                    url:'https://seoulouba.co.kr/'},
+  // ─── A티어 ───
+  {tier:'A', name:'강남맛집',       desc:'방문형·맛집 특화. 초보도 당첨 쉬움. 강남·서초·송파 중심. 방문·배송·기자단·클립 운영',          url:'https://xn--939au0g4vj8sq.net/'},
+  {tier:'A', name:'파블로 체험단',  desc:'24시간 빠른 선정. 맛집·뷰티·제품 다양. 2014년부터 운영한 베테랑 플랫폼',                       url:'https://pavlovu.com/'},
+  {tier:'A', name:'리뷰원정대',     desc:'캠페인 38,000+. 블로그·인스타·숏폼·릴스 통합. 숏폼 특화',                                      url:'https://xn--vk1bn0kvydxrlprb.com'},
+  {tier:'A', name:'오픈리뷰',       desc:'무료 체험단. 초보 블로거 친화적. 포인트 지급 방식',                                             url:'https://openreview.kr/'},
+  {tier:'A', name:'블로그랩',       desc:'원고료 지급 캠페인 다수. 방문형·배송형·기자단 운영',                                            url:'https://bloglab.kr/'},
+  {tier:'A', name:'포포몬',         desc:'무료 인플루언서 매칭. AI 기반 채널 분석 제공. 캠페인 무제한 무료',                              url:'https://popomon.com/'},
+  {tier:'A', name:'티블',           desc:'블로그·인스타 체험단·리뷰마케팅 통합 플랫폼',                                                   url:'https://tble.kr/'},
+  {tier:'A', name:'클라우드리뷰',   desc:'초보 당첨률 높음. 선정 지수 사전 확인 가능. 가격 미리 확인 가능',                               url:'https://nugunablog.co.kr/'},
+  {tier:'A', name:'미블',           desc:'블로그·인스타 체험단. 제품·배송형 다수',                                                        url:'https://www.mrblog.net/'},
+  {tier:'A', name:'스타일씨',       desc:'블로그·인스타·구매평 통합. 당첨 비교적 쉬움',                                                   url:'https://www.stylec.co.kr/'},
+  // ─── B티어 ───
+  {tier:'B', name:'놀러와체험단',   desc:'초보 친화. 방문형·배송형 운영',                                                                 url:'https://www.cometoplay.kr/'},
+  {tier:'B', name:'가보자체험단',   desc:'초보 친화. 선정률 높음. 방문형 중심',                                                           url:'https://www.xn--o39a04kpnjo4k9hgflp.com/'},
+  {tier:'B', name:'아싸뷰',         desc:'초보 추천. 매일 12시 선착순 쇼핑몰 리뷰 캠페인. 인플루언서 마케팅 플랫폼',                      url:'https://assaview.co.kr/'},
+  {tier:'B', name:'포블로그',       desc:'블로그 체험단 무료 등록. 초보 블로거 추천',                                                     url:'https://4blog.net/'},
+  {tier:'B', name:'파인앳플',       desc:'인플루언서 마케팅·인스타·블로그 체험단 통합',                                                   url:'https://www.fineadple.com/'},
+  {tier:'B', name:'리뷰진',         desc:'카페·맛집 전문 마케팅. 방문형 체험단 특화',                                                     url:'https://reviewjin.com/'},
+  {tier:'B', name:'모두모여',       desc:'포인트 지급. 블로그·쇼핑몰 리뷰 통합. 기자단 운영',                                            url:'https://xn--6j1br0ag3lba435lvsj96p.com/'},
+  {tier:'B', name:'모두의체험단',   desc:'소상공인·자영업자 맞춤. 블로그·인스타 통합',                                                    url:'https://www.modan.kr/'},
+  {tier:'B', name:'태그바이',       desc:'인스타·SNS 인플루언서 특화 플랫폼',                                                             url:'https://tagby.io/recruit?type=COMPT'},
+  {tier:'B', name:'링블',           desc:'당첨률 높은 블로그·인스타 체험단',                                                              url:'https://www.ringble.co.kr/'},
+  {tier:'B', name:'핫블',           desc:'국내 최초 GPS 기반 체험단. 당일 예약 가능',                                                     url:'https://hotble.co.kr/index.php'},
+  {tier:'B', name:'체험단닷컴',     desc:'네이버 블로그 체험단 전문',                                                                     url:'https://chehumdan.com/'},
+  {tier:'B', name:'이음체험단',     desc:'소규모. 방문·배송형. 당첨 쉬움',                                                                url:'https://eumreview.kr/'},
+  {tier:'B', name:'뷰티의여왕',     desc:'국내 유일 뷰티 전문 마케팅 플랫폼',                                                            url:'https://bqueens.net/'},
+  {tier:'B', name:'택배의여왕',     desc:'배송형 전문 마케팅 플랫폼',                                                                     url:'https://tqueens.net/'},
+  {tier:'B', name:'스토리앤미디어', desc:'체험단 마케팅·라이브커머스 1등 플랫폼',                                                         url:'https://storyn.kr/'},
+  {tier:'B', name:'리뷰쉐어',       desc:'올인원 콘텐츠 마케팅 플랫폼',                                                                   url:'https://reviewshare.io/'},
+  // ─── C티어 ───
+  {tier:'C', name:'구구다스',       desc:'인플루언서 마케팅 서비스. 콘텐츠로 일상 공유',                                                  url:'https://99das.com/'},
+  {tier:'C', name:'데일리뷰',       desc:'블로그·SNS 체험단 플랫폼',                                                                      url:'https://dailyview.kr/'},
+  {tier:'C', name:'디노단',         desc:'블로그 체험단·기자단 운영',                                                                     url:'https://dinodan.co.kr/'},
+  {tier:'C', name:'리뷰나비',       desc:'블로그 체험단 플랫폼 (리뷰나라)',                                                               url:'https://reviewnavi.co.kr/'},
+  {tier:'C', name:'리뷰통',         desc:'블로그 체험단·리뷰 통합',                                                                       url:'https://www.reviewtong.co.kr/main.php'},
+  {tier:'C', name:'리얼리뷰',       desc:'블로그·인스타·유튜브·구매평 통합. 전문 컨설팅 제공',                                           url:'https://www.real-review.kr/'},
+  {tier:'C', name:'메타체험단',     desc:'블로그 체험단 모집·체험단 신청·무료체험단',                                                     url:'https://metacampaign.co.kr/'},
+  {tier:'C', name:'블덱스체험단',   desc:'블로그 지수 확인 + 체험단. 투명한 리뷰어 매칭',                                                url:'https://blogdexreview.space/'},
+  {tier:'C', name:'블로그주민센터', desc:'국내 1위 표방 블로그 체험단 커뮤니티형 플랫폼',                                                 url:'https://from-blog.com/'},
+  {tier:'C', name:'셀레뷰',         desc:'블로그·SNS 체험단 플랫폼',                                                                      url:'https://celuvu.com/campaign/campaign.php'},
+  {tier:'C', name:'어디야체험단',   desc:'블로그·맛집·숙박·배송형 통합. 선정률 높음',                                                    url:'https://odiya.kr/'},
+  {tier:'C', name:'오마이블로그',   desc:'블로그 체험단 전문. 광고주·블로거 연결',                                                        url:'https://ohmyblog.co.kr/'},
+  {tier:'C', name:'올바른체험단',   desc:'블로그·SNS 체험단',                                                                             url:'https://allbarm.com/'},
+  {tier:'C', name:'원스타체험단',   desc:'블로그 체험단 플랫폼',                                                                          url:'https://onesbyblog.co.kr/'},
+  {tier:'C', name:'잠자리체험단',   desc:'숙박·여행 특화. 국내여행·맛집 체험 운영',                                                      url:'https://alljam.co.kr/'},
+  {tier:'C', name:'체험뷰',         desc:'블로그·인스타·숏폼 무료 체험단. 소상공인 특화',                                                url:'https://chvu.co.kr/'},
+  {tier:'C', name:'큐펫트',         desc:'반려동물 전문 온/오프라인 체험단',                                                              url:'https://qpet.kr/'},
+  {tier:'C', name:'픽미체험단',     desc:'블로그 체험단 픽미',                                                                            url:'https://pick-me.kr/'},
+  {tier:'C', name:'플레이체험단',   desc:'블로그·인스타 체험단',                                                                          url:'https://play0.co.kr/'},
+  {tier:'C', name:'후기업',         desc:'리뷰·체험단 통합 플랫폼',                                                                       url:'https://www.whogiup.com/'},
+  {tier:'C', name:'후키',           desc:'블로그·SNS 체험단',                                                                             url:'https://www.huki.co.kr/'},
+  {tier:'C', name:'리뷰의민족',     desc:'블로그 체험단 플랫폼',                                                                          url:'https://remin.co.kr/'},
+  {tier:'C', name:'모두의블로그',   desc:'모블. 블로그 체험단 플랫폼',                                                                    url:'https://modublog.co.kr/'},
+  {tier:'C', name:'리뷰조아',       desc:'블로그 체험단',                                                                                 url:''},
+  {tier:'C', name:'링뷰체험단',     desc:'체험단 플랫폼 사이트',                                                                          url:'https://ringview.co.kr/'},
+  {tier:'C', name:'클립뷰',         desc:'블로그체험단·클립 체험단 통합 모집 사이트',                                                    url:'https://xn--5y2bw0fi0u.kr/'},
+  // ─── 네이버 카페/블로그 운영 ───
+  {tier:'N', name:'마스터블로그',   desc:'네이버 블로그 운영 체험단',                                                                     url:'http://blog.naver.com/master-blog'},
+  {tier:'N', name:'다뉴체험단',     desc:'네이버 블로그 운영 체험단',                                                                     url:'http://blog.naver.com/daanew1'},
+  {tier:'N', name:'소녀체험단',     desc:'네이버 블로그 운영 체험단',                                                                     url:'http://blog.naver.com/tiqmfh'},
+  // ─── 모음/기타 ───
+  {tier:'기타', name:'모아뷰',      desc:'여러 체험단 사이트 캠페인 모음·집계 (직접 운영 X)',                                             url:'https://moaview.co.kr/'},
+  {tier:'기타', name:'리뷰티풀',    desc:'체험단 사이트 모음·캠페인 링크 검색 (직접 운영 X)',                                            url:'http://reviewtiful.shop/'},
+  {tier:'기타', name:'모아스픽',    desc:'세상의 모든 체험단 사이트 모음·픽 (직접 운영 X)',                                              url:'https://www.moaspick.com/'},
+  {tier:'기타', name:'투잡커넥트',  desc:'부업·투잡 연결 플랫폼. 체험단 포함',                                                           url:'https://tojobcn.com/'},
+];
+
+// 순위 자동 부여
+const tierOrder = ['S','A','B','C','N','기타'];
+const tierMap = {S:'S티어', A:'A티어', B:'B티어', C:'C티어', N:'네이버 카페/블로그', '기타':'모음/기타'};
+let ranked = [];
+let r = 1;
+tierOrder.forEach(t => {
+  data.filter(d => d.tier === t).forEach(d => {
+    ranked.push({...d, rank: t === 'N' || t === '기타' ? '-' : r++});
+  });
+});
+
+document.getElementById('fcnt-all').textContent = '(' + data.length + ')';
+['S','A','B','C','N','기타'].forEach(t => {
+  const el = document.getElementById('fcnt-' + t);
+  if (el) el.textContent = '(' + data.filter(d => d.tier === t).length + ')';
+});
+
+let activeTier = '';
+function setTier(t) {
+  activeTier = t;
+  document.querySelectorAll('.fbtn').forEach(b => {
+    b.className = 'fbtn';
+    const id = b.id.replace('btn-','');
+    if ((id === 'all' && t === '') || id === t) {
+      b.classList.add(t === '' ? 'on-all' : 'on-' + t);
+    }
+  });
+  render();
+}
+function render() {
+  const kw = document.getElementById('kw').value.trim().toLowerCase();
+  const filtered = ranked.filter(d => {
+    const matchTier = !activeTier || d.tier === activeTier;
+    const matchKw = !kw || d.name.toLowerCase().includes(kw) || d.desc.toLowerCase().includes(kw);
+    return matchTier && matchKw;
+  });
+  document.getElementById('count').textContent = `총 ${filtered.length}개 사이트`;
+  const tbody = document.getElementById('tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty">검색 결과가 없습니다.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(d => `
+    <tr>
+      <td class="rank">${d.rank}</td>
+      <td><span class="tier-badge badge-${d.tier}">${tierMap[d.tier]}</span></td>
+      <td class="site-name">${d.name}</td>
+      <td class="site-desc">${d.desc}</td>
+      <td>${d.url ? `<a class="site-link" href="${d.url}" target="_blank" rel="noopener">바로가기 →</a>` : '<span class="no-url">링크 미확인</span>'}</td>
+    </tr>`).join('');
+}
+setTier('');
+</script>
+</body>
+</html>
