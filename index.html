@@ -462,9 +462,22 @@ function setTier(t) {
   render();
 }
 // 광고 삽입 기준: S→A, A→B 사이 + 마지막
-const adBefore = new Set(['A', 'B']);
+// 광고 ID: 첫번째는 항상 첫번째, 나머지는 랜덤
+const adIds = [979318, 979327, 979328, 979329, 979330, 979331, 979332, 979333, 979334, 979338, 979339];
+let adCallCount = 0;
+
+function getAdId() {
+  if (adCallCount === 0) {
+    adCallCount++;
+    return adIds[0]; // 첫번째는 항상 979318
+  }
+  adCallCount++;
+  const rest = adIds.slice(1);
+  return rest[Math.floor(Math.random() * rest.length)];
+}
 
 function createAdRow() {
+  const id = getAdId();
   const tr = document.createElement('tr');
   tr.className = 'ad-row';
   const td = document.createElement('td');
@@ -473,7 +486,7 @@ function createAdRow() {
   td.innerHTML = `
     <div class="ad-wrap" style="margin:0;">
       <div class="ad-wrap-inner">
-        <iframe src="https://ads-partners.coupang.com/widgets.html?id=979318&template=carousel&trackingCode=AF8712140&subId=&width=1200&height=140"
+        <iframe src="https://ads-partners.coupang.com/widgets.html?id=${id}&template=carousel&trackingCode=AF8712140&subId=&width=1200&height=140"
           width="100%" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"
           style="display:block; width:100%; max-width:1200px;"></iframe>
       </div>
@@ -492,13 +505,14 @@ function render() {
   document.getElementById('count').textContent = `총 ${filtered.length}개 사이트`;
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = '';
+  adCallCount = 0; // 렌더링마다 카운트 초기화
   if (!filtered.length) {
     tbody.innerHTML = '<tr><td colspan="5" class="empty">검색 결과가 없습니다.</td></tr>';
     return;
   }
-  let prevTier = null;
-  filtered.forEach(d => {
-    if (prevTier && prevTier !== d.tier && adBefore.has(d.tier) && !activeTier) {
+  filtered.forEach((d, i) => {
+    // 5개마다 광고 삽입 (첫번째 행 이후부터)
+    if (i > 0 && i % 5 === 0) {
       tbody.appendChild(createAdRow());
     }
     const tr = document.createElement('tr');
@@ -509,7 +523,6 @@ function render() {
       <td class="site-desc">${d.desc}</td>
       <td>${d.url ? `<a class="site-link" href="${d.url}" target="_blank" rel="noopener">바로가기 →</a>` : '<span class="no-url">링크 미확인</span>'}</td>`;
     tbody.appendChild(tr);
-    prevTier = d.tier;
   });
 }
 setTier('');
