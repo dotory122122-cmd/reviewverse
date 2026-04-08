@@ -13,7 +13,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Bebas+Neue&family=Inter:wght@700;900&display=swap" rel="stylesheet">
 
 <!-- ✅ 쿠팡 파트너스 -->
-<script src="https://ads-partners.coupang.com/g.js"></script>
+<script>
+(function() {
+  var s = document.createElement('script');
+  s.src = 'https://ads-partners.coupang.com/g.js';
+  s.async = true;
+  s.onload = function() {
+    window._coupangReady = true;
+    if (window._coupangQueue) {
+      window._coupangQueue.forEach(function(el) { runCoupangAd(el); });
+      window._coupangQueue = [];
+    }
+  };
+  document.head.appendChild(s);
+})();
+
+function runCoupangAd(el) {
+  if (!el || el.dataset.loaded) return;
+  el.dataset.loaded = '1';
+  new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"1200","height":"140","tsource":""});
+}
+
+function initCoupangSlot(el) {
+  if (window._coupangReady) {
+    runCoupangAd(el);
+  } else {
+    window._coupangQueue = window._coupangQueue || [];
+    window._coupangQueue.push(el);
+  }
+}
+</script>
 
 <!-- ✅ 애드센스 | ca-pub-XXXXXXXXXXXXXXXX 를 본인 Publisher ID로 교체 후 주석 해제 -->
 <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
@@ -156,34 +185,8 @@
   .fbtn.on-all .fcnt, .fbtn.on-S .fcnt, .fbtn.on-A .fcnt, .fbtn.on-B .fcnt { background: rgba(255,255,255,0.22); }
 
   main { max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
-  .result-count { font-size: 12px; color: var(--text-muted); margin-bottom: 1rem; }
-
-  /* 레전드 → 툴팁 아이콘 */
-  .legend { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
-  .legend-icon {
-    position: relative; display: inline-flex; align-items: center; justify-content: center;
-    width: 22px; height: 22px; border-radius: 50%;
-    font-size: 11px; font-weight: 700; cursor: pointer;
-    border: 1px solid var(--border); color: var(--text-muted);
-    background: var(--surface); transition: all 0.15s; user-select: none;
-  }
-  .legend-icon:hover { border-color: #a855f7; color: #a855f7; }
-  .legend-icon .legend-dot-mini {
-    width: 7px; height: 7px; border-radius: 2px; display: inline-block;
-  }
-  .legend-tooltip {
-    display: none; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
-    background: #1a1625; color: #f0ecff; font-size: 11px; font-weight: 400;
-    white-space: nowrap; padding: 5px 10px; border-radius: 6px;
-    border: 1px solid rgba(167,120,255,0.25); z-index: 200;
-    pointer-events: none; letter-spacing: 0.01em;
-  }
-  .legend-tooltip::after {
-    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-    border: 5px solid transparent; border-top-color: #1a1625;
-  }
-  .legend-icon:hover .legend-tooltip,
-  .legend-icon.active .legend-tooltip { display: block; }
+  .legend { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
 
   table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
   thead tr { background: var(--text-primary); }
@@ -319,33 +322,14 @@
 
 <main>
   <div class="legend">
-    <div class="legend-icon" onclick="this.classList.toggle('active')">
-      <div class="legend-dot-mini" style="background:#1a1625"></div>
-      <div class="legend-tooltip">S티어 — MUV 100만+ 대형 플랫폼</div>
-    </div>
-    <div class="legend-icon" onclick="this.classList.toggle('active')">
-      <div class="legend-dot-mini" style="background:#5b2d9e"></div>
-      <div class="legend-tooltip">A티어 — 활성화된 중형 플랫폼</div>
-    </div>
-    <div class="legend-icon" onclick="this.classList.toggle('active')">
-      <div class="legend-dot-mini" style="background:#8b5cf6"></div>
-      <div class="legend-tooltip">B티어 — 특화 플랫폼</div>
-    </div>
-    <div class="legend-icon" onclick="this.classList.toggle('active')">
-      <div class="legend-dot-mini" style="background:#d8cff0"></div>
-      <div class="legend-tooltip">C티어 — 소규모·틈새 플랫폼</div>
-    </div>
-    <div class="legend-icon" onclick="this.classList.toggle('active')">
-      <div class="legend-dot-mini" style="background:#9ec98a"></div>
-      <div class="legend-tooltip">N — 네이버 카페/블로그 운영</div>
-    </div>
-    <div class="legend-icon" onclick="this.classList.toggle('active')">
-      <div class="legend-dot-mini" style="background:#d8cff0; border: 1px solid #b0a0d0;"></div>
-      <div class="legend-tooltip">기타 — 체험단 모음/집계 사이트</div>
-    </div>
-    <span style="font-size:11px; color: var(--text-muted); margin-left:4px;">← 각 색상 의미 보기</span>
+    <div class="legend-item"><div class="legend-dot" style="background:#1a1625; width:8px; height:8px; border-radius:2px; display:inline-block;"></div> S티어 — MUV 100만+ 대형</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#5b2d9e; width:8px; height:8px; border-radius:2px; display:inline-block;"></div> A티어 — 활성화된 중형</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6; width:8px; height:8px; border-radius:2px; display:inline-block;"></div> B티어 — 특화 플랫폼</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d8cff0; width:8px; height:8px; border-radius:2px; display:inline-block;"></div> C티어 — 소규모·틈새</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9ec98a; width:8px; height:8px; border-radius:2px; display:inline-block;"></div> 네이버 카페/블로그 운영</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d8cff0; width:8px; height:8px; border-radius:2px; border:1px solid #b0a0d0; display:inline-block;"></div> 모음/기타</div>
   </div>
-  <div class="result-count" id="count"></div>
+  <div id="count" style="display:none;"></div>
   <table>
     <thead>
       <tr>
@@ -364,9 +348,7 @@
 <div class="ad-wrap">
   <div class="ad-wrap-inner">
     <div class="ad-label">AD</div>
-    <script>
-      new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"1200","height":"140","tsource":""});
-    </script>
+    <div class="coupang-ad-slot" id="coupang-bottom"></div>
   </div>
 </div>
 
@@ -525,10 +507,8 @@ function createAdRow() {
 }
 
 function renderCoupangAds() {
-  document.querySelectorAll('.coupang-ad-slot').forEach(slot => {
-    const s = document.createElement('script');
-    s.textContent = `new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"1200","height":"140","tsource":""});`;
-    slot.appendChild(s);
+  document.querySelectorAll('.coupang-ad-slot:not([data-loaded])').forEach(function(slot) {
+    initCoupangSlot(slot);
   });
 }
 
@@ -565,6 +545,8 @@ function render() {
   renderCoupangAds();
 }
 setTier('');
+// 하단 고정 광고 초기화
+initCoupangSlot(document.getElementById('coupang-bottom'));
 </script>
 </body>
 </html>
