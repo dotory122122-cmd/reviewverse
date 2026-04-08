@@ -49,7 +49,7 @@
 
   header {
     background: linear-gradient(135deg, #0d0b14 0%, #1a1625 55%, #221340 100%);
-    color: #f0ecff; padding: 2.75rem 2rem 2.25rem; position: relative; overflow: hidden;
+    color: #f0ecff; padding: 4rem 2rem 3rem; position: relative; overflow: hidden;
   }
   header::before {
     content: '';
@@ -99,9 +99,18 @@
   /* 태그라인 */
   .brand-tag {
     font-size: 12.5px; font-weight: 300; color: #6b5f85;
-    letter-spacing: 0.01em; line-height: 1.6; margin-bottom: 1.4rem;
+    letter-spacing: 0.01em; line-height: 1.6; margin-bottom: 2rem;
   }
   .brand-tag em { font-style: normal; color: #9580b8; }
+
+  /* 검색바 sticky 래퍼 */
+  .search-sticky {
+    position: sticky; top: 0; z-index: 101;
+    background: linear-gradient(180deg, #1a1625 0%, rgba(26,22,37,0.97) 100%);
+    padding: 0.9rem 2rem;
+    border-bottom: 1px solid rgba(167,120,255,0.12);
+    backdrop-filter: blur(8px);
+  }
 
   .header-search-wrap { position: relative; max-width: 1200px; width: 100%; margin: 0 auto; display: flex; gap: 0; }
   .header-search-wrap input {
@@ -126,7 +135,7 @@
   }
   .header-search-btn:hover { opacity: 0.88; }
 
-  .controls { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.75rem 2rem; position: sticky; top: 0; z-index: 100; }
+  .controls { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.75rem 2rem; position: sticky; top: 53px; z-index: 100; }
   .controls-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; }
   .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
   .fbtn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border); font-family: 'Noto Sans KR', sans-serif; font-size: 12px; cursor: pointer; background: transparent; color: var(--text-secondary); transition: all 0.15s; }
@@ -148,9 +157,33 @@
 
   main { max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
   .result-count { font-size: 12px; color: var(--text-muted); margin-bottom: 1rem; }
-  .legend { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
-  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* 레전드 → 툴팁 아이콘 */
+  .legend { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+  .legend-icon {
+    position: relative; display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    font-size: 11px; font-weight: 700; cursor: pointer;
+    border: 1px solid var(--border); color: var(--text-muted);
+    background: var(--surface); transition: all 0.15s; user-select: none;
+  }
+  .legend-icon:hover { border-color: #a855f7; color: #a855f7; }
+  .legend-icon .legend-dot-mini {
+    width: 7px; height: 7px; border-radius: 2px; display: inline-block;
+  }
+  .legend-tooltip {
+    display: none; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
+    background: #1a1625; color: #f0ecff; font-size: 11px; font-weight: 400;
+    white-space: nowrap; padding: 5px 10px; border-radius: 6px;
+    border: 1px solid rgba(167,120,255,0.25); z-index: 200;
+    pointer-events: none; letter-spacing: 0.01em;
+  }
+  .legend-tooltip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: #1a1625;
+  }
+  .legend-icon:hover .legend-tooltip,
+  .legend-icon.active .legend-tooltip { display: block; }
 
   table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
   thead tr { background: var(--text-primary); }
@@ -178,8 +211,8 @@
   footer { text-align: center; padding: 2rem; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); letter-spacing: 0.05em; }
 
   @media (max-width: 768px) {
-    /* 헤더 */
-    header { padding: 1.75rem 1.25rem 1.5rem; }
+    header { padding: 2.5rem 1.25rem 2rem; }
+    .search-sticky { padding: 0.65rem 1rem; }
     .header-search-wrap { max-width: 100%; }
     .brand-divider { display: none; }
     .brand-wrap { gap: 8px; }
@@ -258,13 +291,17 @@
       <span class="brand-en">ReviewVerse</span>
     </div>
     <p class="brand-tag">블로그·인스타·숏폼 체험단·리뷰 캠페인 통합 검색 플랫폼</p>
-    <div class="header-search-wrap">
-      <span class="header-search-icon">🔍</span>
-      <input type="text" id="kw" placeholder="체험하고 싶은 캠페인 키워드를 입력하세요" oninput="render()" onkeydown="if(event.key==='Enter')render()">
-      <button class="header-search-btn" onclick="render()">검색</button>
-    </div>
   </div>
 </header>
+
+<!-- 검색바 sticky 고정 -->
+<div class="search-sticky">
+  <div class="header-search-wrap">
+    <span class="header-search-icon">🔍</span>
+    <input type="text" id="kw" placeholder="체험하고 싶은 캠페인 키워드를 입력하세요" oninput="render()" onkeydown="if(event.key==='Enter')render()">
+    <button class="header-search-btn" onclick="render()">검색</button>
+  </div>
+</div>
 
 <div class="controls">
   <div class="controls-inner">
@@ -282,12 +319,31 @@
 
 <main>
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#1a1625"></div>S티어 — MUV 100만+ 대형</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#5b2d9e"></div>A티어 — 활성화된 중형</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>B티어 — 특화 플랫폼</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#d8cff0"></div>C티어 — 소규모·틈새</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#9ec98a"></div>네이버 카페/블로그 운영</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#d8cff0"></div>모음/기타</div>
+    <div class="legend-icon" onclick="this.classList.toggle('active')">
+      <div class="legend-dot-mini" style="background:#1a1625"></div>
+      <div class="legend-tooltip">S티어 — MUV 100만+ 대형 플랫폼</div>
+    </div>
+    <div class="legend-icon" onclick="this.classList.toggle('active')">
+      <div class="legend-dot-mini" style="background:#5b2d9e"></div>
+      <div class="legend-tooltip">A티어 — 활성화된 중형 플랫폼</div>
+    </div>
+    <div class="legend-icon" onclick="this.classList.toggle('active')">
+      <div class="legend-dot-mini" style="background:#8b5cf6"></div>
+      <div class="legend-tooltip">B티어 — 특화 플랫폼</div>
+    </div>
+    <div class="legend-icon" onclick="this.classList.toggle('active')">
+      <div class="legend-dot-mini" style="background:#d8cff0"></div>
+      <div class="legend-tooltip">C티어 — 소규모·틈새 플랫폼</div>
+    </div>
+    <div class="legend-icon" onclick="this.classList.toggle('active')">
+      <div class="legend-dot-mini" style="background:#9ec98a"></div>
+      <div class="legend-tooltip">N — 네이버 카페/블로그 운영</div>
+    </div>
+    <div class="legend-icon" onclick="this.classList.toggle('active')">
+      <div class="legend-dot-mini" style="background:#d8cff0; border: 1px solid #b0a0d0;"></div>
+      <div class="legend-tooltip">기타 — 체험단 모음/집계 사이트</div>
+    </div>
+    <span style="font-size:11px; color: var(--text-muted); margin-left:4px;">← 각 색상 의미 보기</span>
   </div>
   <div class="result-count" id="count"></div>
   <table>
@@ -448,20 +504,33 @@ function setTier(t) {
   });
   render();
 }
-const adHTML = `
-  <tr class="ad-row">
-    <td colspan="5" style="padding:0; border:none;">
-      <div class="ad-wrap" style="margin:0;">
-        <div class="ad-wrap-inner">
-          <div class="ad-label">AD</div>
-          <script>new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"1200","height":"140","tsource":""});<\/script>
-        </div>
-      </div>
-    </td>
-  </tr>`;
-
-// 광고 삽입 기준: 해당 티어 시작 전 (S→A, A→B 사이) + 마지막 행 뒤
+// 광고 삽입 기준: S→A, A→B 사이 + 마지막
 const adBefore = new Set(['A', 'B']);
+
+function createAdRow() {
+  const tr = document.createElement('tr');
+  tr.className = 'ad-row';
+  const td = document.createElement('td');
+  td.setAttribute('colspan', '5');
+  td.style.cssText = 'padding:0; border:none;';
+  td.innerHTML = `
+    <div class="ad-wrap" style="margin:0;">
+      <div class="ad-wrap-inner">
+        <div class="ad-label">AD</div>
+        <div class="coupang-ad-slot"></div>
+      </div>
+    </div>`;
+  tr.appendChild(td);
+  return tr;
+}
+
+function renderCoupangAds() {
+  document.querySelectorAll('.coupang-ad-slot').forEach(slot => {
+    const s = document.createElement('script');
+    s.textContent = `new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"1200","height":"140","tsource":""});`;
+    slot.appendChild(s);
+  });
+}
 
 function render() {
   const kw = document.getElementById('kw').value.trim().toLowerCase();
@@ -472,30 +541,28 @@ function render() {
   });
   document.getElementById('count').textContent = `총 ${filtered.length}개 사이트`;
   const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
   if (!filtered.length) {
     tbody.innerHTML = '<tr><td colspan="5" class="empty">검색 결과가 없습니다.</td></tr>';
     return;
   }
-  let html = '';
   let prevTier = null;
   filtered.forEach(d => {
-    // 티어 경계에서 광고 삽입 (전체 보기일 때만)
     if (prevTier && prevTier !== d.tier && adBefore.has(d.tier) && !activeTier) {
-      html += adHTML;
+      tbody.appendChild(createAdRow());
     }
-    html += `
-    <tr>
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
       <td class="rank">${d.rank}</td>
       <td><span class="tier-badge badge-${d.tier}">${tierMap[d.tier]}</span></td>
       <td class="site-name">${d.name}</td>
       <td class="site-desc">${d.desc}</td>
-      <td>${d.url ? `<a class="site-link" href="${d.url}" target="_blank" rel="noopener">바로가기 →</a>` : '<span class="no-url">링크 미확인</span>'}</td>
-    </tr>`;
+      <td>${d.url ? `<a class="site-link" href="${d.url}" target="_blank" rel="noopener">바로가기 →</a>` : '<span class="no-url">링크 미확인</span>'}</td>`;
+    tbody.appendChild(tr);
     prevTier = d.tier;
   });
-  // 마지막 행 뒤에도 광고 삽입 (전체 보기일 때만)
-  if (!activeTier) html += adHTML;
-  tbody.innerHTML = html;
+  if (!activeTier) tbody.appendChild(createAdRow());
+  renderCoupangAds();
 }
 setTier('');
 </script>
