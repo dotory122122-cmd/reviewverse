@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리뷰버스 — 슬라이드 배너 DEV</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://ads-partners.coupang.com/g.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: #f8f6fc; color: #1a1625; min-height: 200vh; font-size: 14px; line-height: 1.6; }
+
+  /* ── DEV 패널 ── */
+  .dev-panel {
+    position: fixed; top: 16px; left: 16px; z-index: 9999;
+    background: #1a1625; border: 1px solid rgba(167,120,255,0.3);
+    border-radius: 12px; padding: 16px 20px; width: 280px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .dev-panel h2 { font-size: 11px; letter-spacing: 0.15em; color: #a855f7; text-transform: uppercase; margin-bottom: 14px; }
+  .dev-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .dev-row label { font-size: 11px; color: #9580b8; }
+  .dev-row select, .dev-row input[type=range] { width: 100%; background: #2d1b4e; border: 1px solid rgba(167,120,255,0.2); border-radius: 6px; color: #f0ecff; padding: 5px 8px; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; outline: none; }
+  .dev-row input[type=range] { padding: 4px 0; accent-color: #a855f7; }
+  .dev-val { font-size: 11px; color: #c084fc; text-align: right; margin-top: 2px; }
+  .dev-btn { width: 100%; padding: 8px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; font-weight: 500; margin-top: 4px; transition: opacity 0.15s; }
+  .dev-btn:hover { opacity: 0.85; }
+  .btn-trigger { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; }
+  .btn-reset { background: #2d1b4e; color: #c084fc; border: 1px solid rgba(167,120,255,0.3); margin-top: 6px; }
+  .dev-divider { border: none; border-top: 1px solid rgba(167,120,255,0.15); margin: 10px 0; }
+  .dev-log { font-size: 10px; color: #6b5f85; line-height: 1.8; }
+  .dev-log span { display: block; }
+  .dev-log .log-ok { color: #6bc98a; }
+  .dev-log .log-info { color: #c084fc; }
+
+  /* ── 더미 콘텐츠 ── */
+  .page-header { background: linear-gradient(135deg, #0d0b14, #1a1625, #221340); padding: 3rem 2rem; text-align: center; color: #f0ecff; }
+  .page-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .page-header p { font-size: 13px; color: #9580b8; }
+  .content { max-width: 900px; margin: 2rem auto; padding: 0 2rem; }
+  .dummy-card { background: #fff; border: 1px solid #ede8f5; border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem; }
+  .dummy-card h3 { font-size: 14px; font-weight: 600; color: #1a1625; margin-bottom: 6px; }
+  .dummy-card p { font-size: 12px; color: #6b6278; }
+  .scroll-hint { text-align: center; padding: 3rem; color: #b0a8c4; font-size: 13px; }
+  .scroll-hint span { display: block; font-size: 24px; margin-bottom: 8px; animation: bounce 1.5s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+  /* ── 슬라이드 배너 ── */
+  .slide-banner {
+    position: fixed;
+    bottom: -200px; /* 초기 숨김 */
+    left: 0; right: 0;
+    z-index: 1000;
+    transition: bottom 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex; justify-content: center;
+  }
+  .slide-banner.visible { bottom: 0; }
+  .slide-banner.hidden { bottom: -200px; }
+
+  .banner-inner {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    background: #fff;
+    border-top: 2px solid #a855f7;
+    box-shadow: 0 -4px 24px rgba(124,77,189,0.18);
+    overflow: hidden;
+  }
+
+  /* 닫기 버튼 */
+  .banner-close {
+    position: absolute; top: 6px; right: 8px; z-index: 10;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(26,22,37,0.7); border: none; cursor: pointer;
+    color: #f0ecff; font-size: 14px; line-height: 24px; text-align: center;
+    transition: background 0.15s;
+  }
+  .banner-close:hover { background: #7c3aed; }
+
+  /* 배너 광고 슬롯 */
+  .banner-ad-slot { display: block; width: 100%; line-height: 0; font-size: 0; }
+  .banner-ad-slot iframe { display: block; width: 100% !important; }
+
+  /* 파트너스 문구 */
+  .banner-notice {
+    text-align: center; font-size: 10px; color: #b0a8c4;
+    padding: 4px 0 5px; background: #faf8ff;
+    border-top: 1px solid #ede8f5;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+
+<!-- DEV 컨트롤 패널 -->
+<div class="dev-panel">
+  <h2>🛠 Banner DEV Panel</h2>
+
+  <div class="dev-row">
+    <label>광고 ID 선택</label>
+    <select id="dev-ad-id">
+      <option value="random">🎲 랜덤</option>
+      <option value="979318">979318 (1번 고정)</option>
+      <option value="979327">979327</option>
+      <option value="979328">979328</option>
+      <option value="979329">979329</option>
+      <option value="979330">979330</option>
+      <option value="979331">979331</option>
+      <option value="979332">979332</option>
+      <option value="979333">979333</option>
+      <option value="979334">979334</option>
+      <option value="979338">979338</option>
+      <option value="979339">979339</option>
+    </select>
+  </div>
+
+  <div class="dev-row">
+    <label>트리거 스크롤 위치</label>
+    <input type="range" id="dev-scroll-pct" min="5" max="90" value="30">
+    <div class="dev-val" id="dev-scroll-val">30%</div>
+  </div>
+
+  <div class="dev-row">
+    <label>닫은 후 재노출 대기 (초)</label>
+    <input type="range" id="dev-reshow" min="0" max="30" value="10">
+    <div class="dev-val" id="dev-reshow-val">10초</div>
+  </div>
+
+  <button class="dev-btn btn-trigger" onclick="devTrigger()">▶ 배너 즉시 실행</button>
+  <button class="dev-btn btn-reset" onclick="devReset()">↺ 리셋 (배너 숨김)</button>
+
+  <hr class="dev-divider">
+  <div class="dev-log" id="dev-log">
+    <span class="log-info">대기 중...</span>
+  </div>
+</div>
+
+<!-- 더미 콘텐츠 -->
+<div class="page-header">
+  <h1>리뷰버스 ReviewVerse</h1>
+  <p>슬라이드 배너 DEV 테스트 페이지</p>
+</div>
+
+<div class="content">
+  <div class="scroll-hint"><span>↓</span>아래로 스크롤하면 배너가 나타납니다</div>
+
+  <div class="dummy-card"><h3>리뷰노트</h3><p>MUV 약 320만, 국내 트래픽 1위. 광고주 무료 등록, 캠페인 수 최다.</p></div>
+  <div class="dummy-card"><h3>레뷰 (REVU)</h3><p>MUV 약 250만, 가장 오래된 1세대 대형 플랫폼. 운영 퀄리티·회원수 압도적.</p></div>
+  <div class="dummy-card"><h3>디너의여왕</h3><p>MUV 상위권. 맛집·카페 방문형 특화 대형 플랫폼. 푸드 분야 국내 1위.</p></div>
+  <div class="dummy-card"><h3>리뷰플레이스</h3><p>MUV 4위. 구매형 체험단 다수. 숏폼(네이버클립·릴스) 체험단도 운영.</p></div>
+  <div class="dummy-card"><h3>강남맛집</h3><p>방문형·맛집 특화. 초보도 당첨 쉬움. 강남·서초·송파 중심.</p></div>
+  <div class="dummy-card"><h3>위유 (WE:U)</h3><p>2008년부터 운영. 블로그·인스타·유튜브 체험단 통합.</p></div>
+  <div class="dummy-card"><h3>서울오빠</h3><p>MUV 상위권. 맛집·기자단 다수. 1등 크리에이터 중개 플랫폼.</p></div>
+  <div class="dummy-card"><h3>파블로 체험단</h3><p>24시간 빠른 선정. 맛집·뷰티·제품 다양.</p></div>
+  <div class="dummy-card"><h3>리뷰원정대</h3><p>캠페인 38,000+. 블로그·인스타·숏폼·릴스 통합.</p></div>
+  <div class="dummy-card"><h3>오픈리뷰</h3><p>무료 체험단. 초보 블로거 친화적. 포인트 지급 방식.</p></div>
+</div>
+
+<!-- 슬라이드 배너 -->
+<div class="slide-banner" id="slide-banner">
+  <div class="banner-inner">
+    <button class="banner-close" onclick="closeBanner()" title="닫기">×</button>
+    <div class="banner-ad-slot" id="banner-ad-slot"></div>
+    <div class="banner-notice">이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</div>
+  </div>
+</div>
+
+<script>
+// ── 설정 ──
+const AD_IDS = [979318, 979327, 979328, 979329, 979330, 979331, 979332, 979333, 979334, 979338, 979339];
+let bannerShown = false;
+let bannerClosed = false;
+let reshowTimer = null;
+let currentAdId = null;
+
+// ── 유틸 ──
+function log(msg, type = 'log-info') {
+  const el = document.getElementById('dev-log');
+  const time = new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  el.innerHTML = `<span class="${type}">[${time}] ${msg}</span>` + el.innerHTML;
+}
+
+function getAdId() {
+  const sel = document.getElementById('dev-ad-id').value;
+  if (sel === 'random') {
+    const pool = AD_IDS.slice(1);
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+  return parseInt(sel);
+}
+
+// ── 배너 렌더 ──
+function renderAd(id) {
+  const slot = document.getElementById('banner-ad-slot');
+  slot.innerHTML = '';
+  currentAdId = id;
+  // iframe 방식 (동적 삽입 안정적)
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://ads-partners.coupang.com/widgets.html?id=${id}&template=carousel&trackingCode=AF8712140&subId=&width=1200&height=140`;
+  iframe.setAttribute('width', '100%');
+  iframe.setAttribute('height', '140');
+  iframe.setAttribute('frameborder', '0');
+  iframe.setAttribute('scrolling', 'no');
+  iframe.setAttribute('referrerpolicy', 'unsafe-url');
+  iframe.style.cssText = 'display:block; width:100%; max-width:1200px;';
+  slot.appendChild(iframe);
+  log(`광고 ID ${id} 로드됨`, 'log-ok');
+}
+
+// ── 배너 열기 ──
+function showBanner() {
+  if (bannerShown) return;
+  const id = getAdId();
+  renderAd(id);
+  const banner = document.getElementById('slide-banner');
+  banner.classList.remove('hidden');
+  banner.classList.add('visible');
+  bannerShown = true;
+  log(`배너 노출 (ID: ${id})`, 'log-ok');
+}
+
+// ── 배너 닫기 ──
+function closeBanner() {
+  const banner = document.getElementById('slide-banner');
+  banner.classList.remove('visible');
+  banner.classList.add('hidden');
+  bannerShown = false;
+  bannerClosed = true;
+  const reshow = parseInt(document.getElementById('dev-reshow').value);
+  log(`배너 닫힘 — ${reshow}초 후 재노출`, 'log-info');
+  if (reshow > 0) {
+    reshowTimer = setTimeout(() => {
+      bannerClosed = false;
+      log('재노출 대기 완료', 'log-info');
+    }, reshow * 1000);
+  }
+}
+
+// ── 스크롤 감지 ──
+window.addEventListener('scroll', () => {
+  if (bannerShown || bannerClosed) return;
+  const pct = parseInt(document.getElementById('dev-scroll-pct').value) / 100;
+  const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  if (scrolled >= pct) showBanner();
+}, { passive: true });
+
+// ── DEV 버튼 ──
+function devTrigger() {
+  bannerShown = false;
+  bannerClosed = false;
+  clearTimeout(reshowTimer);
+  showBanner();
+}
+
+function devReset() {
+  const banner = document.getElementById('slide-banner');
+  banner.classList.remove('visible');
+  banner.classList.add('hidden');
+  bannerShown = false;
+  bannerClosed = false;
+  clearTimeout(reshowTimer);
+  document.getElementById('banner-ad-slot').innerHTML = '';
+  log('리셋 완료', 'log-info');
+}
+
+// ── 슬라이더 라벨 ──
+document.getElementById('dev-scroll-pct').addEventListener('input', function() {
+  document.getElementById('dev-scroll-val').textContent = this.value + '%';
+});
+document.getElementById('dev-reshow').addEventListener('input', function() {
+  document.getElementById('dev-reshow-val').textContent = this.value + '초';
+});
+
+log('DEV 패널 준비 완료', 'log-ok');
+</script>
+</body>
+</html>
