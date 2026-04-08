@@ -190,6 +190,75 @@
 
   footer { text-align: center; padding: 2rem; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); letter-spacing: 0.05em; }
 
+  /* ── 슬라이드 배너 ── */
+  .slide-banner {
+    position: fixed; bottom: -220px; left: 0; right: 0; z-index: 1000;
+    transition: bottom 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex; justify-content: center;
+  }
+  .slide-banner.visible { bottom: 0; }
+  .slide-banner.hidden  { bottom: -220px; }
+  .banner-inner {
+    position: relative; width: 100%; max-width: 1200px;
+    background: #fff; border-top: 2px solid #a855f7;
+    box-shadow: 0 -4px 24px rgba(124,77,189,0.2); overflow: hidden;
+  }
+  .banner-action {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 12px 6px 16px; background: #1a1625; gap: 10px;
+  }
+  .banner-action-left { display: flex; align-items: center; gap: 8px; }
+  .banner-label { font-size: 10px; color: #9580b8; letter-spacing: 0.08em; text-transform: uppercase; }
+  .banner-coupang-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 14px; border-radius: 20px;
+    background: linear-gradient(135deg, #e8003c, #ff5f6d);
+    color: #fff; font-size: 11px; font-weight: 700;
+    text-decoration: none; letter-spacing: 0.02em; transition: opacity 0.15s; white-space: nowrap;
+  }
+  .banner-coupang-btn:hover { opacity: 0.85; }
+  .banner-close {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    background: rgba(255,255,255,0.1); border: none; cursor: pointer;
+    color: #9580b8; font-size: 16px; line-height: 26px; text-align: center;
+    transition: all 0.15s;
+  }
+  .banner-close:hover { background: rgba(255,255,255,0.2); color: #fff; }
+  .banner-body { display: flex; align-items: stretch; }
+  .banner-ad-slot { flex: 1; display: block; line-height: 0; font-size: 0; }
+  .banner-ad-slot iframe { display: block; width: 100% !important; }
+  .banner-side {
+    width: 150px; flex-shrink: 0;
+    background: linear-gradient(180deg, #1a1625, #221340);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; padding: 0 14px;
+    border-left: 1px solid rgba(167,120,255,0.15);
+  }
+  .banner-side-logo { font-size: 10px; font-weight: 700; color: #c084fc; letter-spacing: 0.1em; }
+  .banner-side-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 8px 16px; border-radius: 8px;
+    background: linear-gradient(135deg, #e8003c, #ff5f6d);
+    color: #fff; font-size: 11px; font-weight: 700;
+    text-decoration: none; text-align: center; transition: opacity 0.15s; width: 100%;
+  }
+  .banner-side-btn:hover { opacity: 0.85; }
+  .banner-side-btn span { font-size: 16px; }
+  .banner-notice {
+    text-align: center; font-size: 10px; color: #b0a8c4;
+    padding: 3px 0 4px; background: #faf8ff;
+    border-top: 1px solid #ede8f5; letter-spacing: 0.02em;
+  }
+  /* 모바일: 사이드 숨김 */
+  @media (max-width: 768px) {
+    .banner-side { display: none; }
+    .banner-coupang-btn { display: inline-flex; }
+  }
+  /* PC: 액션 바 바로가기 버튼 숨김 (사이드에 있으므로) */
+  @media (min-width: 769px) {
+    .banner-coupang-btn { display: none; }
+  }
+
   @media (max-width: 768px) {
     header { padding: 2.5rem 1.25rem 1.2rem; }
     .search-sticky { padding: 0.6rem 1rem 0; }
@@ -321,19 +390,9 @@
   </table>
 </main>
 
-<!-- ✅ 광고: 테이블 하단 쿠팡 파트너스 -->
-<div class="ad-wrap">
-  <div class="ad-wrap-inner">
-    <script>
-      new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"1200","height":"140","tsource":""});
-    </script>
-  </div>
-</div>
-
 <!-- ✅ 애드센스 — 심사 통과 후 아래 주석 해제 + Publisher ID / slot ID 교체
 <div class="ad-wrap">
   <div class="ad-wrap-inner">
-    <div class="ad-label">AD</div>
     <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
@@ -358,6 +417,32 @@
     ReviewVerse · 체험단 통합 검색 플랫폼
   </div>
 </footer>
+
+<!-- ✅ 슬라이드 배너 -->
+<div class="slide-banner" id="slide-banner">
+  <div class="banner-inner">
+    <div class="banner-action">
+      <div class="banner-action-left">
+        <span class="banner-label">AD</span>
+        <a class="banner-coupang-btn" id="banner-link" href="https://www.coupang.com" target="_blank" rel="noopener sponsored">
+          🛒 쿠팡 바로가기 →
+        </a>
+      </div>
+      <button class="banner-close" onclick="closeBanner()" title="닫기">×</button>
+    </div>
+    <div class="banner-body">
+      <div class="banner-ad-slot" id="banner-ad-slot"></div>
+      <div class="banner-side">
+        <div class="banner-side-logo">COUPANG</div>
+        <a class="banner-side-btn" id="banner-side-link" href="https://www.coupang.com" target="_blank" rel="noopener sponsored">
+          <span>🛒</span>쿠팡<br>바로가기
+        </a>
+        <div style="font-size:9px; color:#4a3f60; text-align:center; line-height:1.5;">파트너스 활동으로<br>수수료를 받습니다</div>
+      </div>
+    </div>
+    <div class="banner-notice">이 페이지는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</div>
+  </div>
+</div>
 
 <script>
 const data = [
@@ -519,15 +604,25 @@ function render() {
   document.getElementById('count').textContent = `총 ${filtered.length}개 사이트`;
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = '';
-  adCallCount = 0; // 렌더링마다 카운트 초기화
+  adCallCount = 0;
   if (!filtered.length) {
     tbody.innerHTML = '<tr><td colspan="5" class="empty">검색 결과가 없습니다.</td></tr>';
     return;
   }
+  const isMobile = window.innerWidth <= 768;
+  // 모바일: 5개마다 / PC: 첫번째는 5번째 후, 이후 10개마다
+  let adRowCount = 0;
   filtered.forEach((d, i) => {
-    // 5개마다 광고 삽입 (첫번째 행 이후부터)
-    if (i > 0 && i % 5 === 0) {
+    let insertAd = false;
+    if (isMobile) {
+      insertAd = i > 0 && i % 5 === 0;
+    } else {
+      if (adRowCount === 0 && i === 5) insertAd = true;
+      else if (adRowCount > 0 && i > 0 && (i - 5) % 10 === 0) insertAd = true;
+    }
+    if (insertAd) {
       tbody.appendChild(createAdRow());
+      adRowCount++;
     }
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -540,6 +635,56 @@ function render() {
   });
 }
 setTier('');
+
+// ── 슬라이드 배너 ──
+let bannerShown = false;
+let bannerClosed = false;
+let reshowTimer = null;
+
+function getBannerAdId() {
+  if (adCallCount === 0) return adIds[0];
+  if (adQueue.length === 0) adQueue = shuffleArray(adIds.slice(1));
+  return adQueue.shift();
+}
+
+function showBanner() {
+  if (bannerShown || bannerClosed) return;
+  const id = adIds[1 + Math.floor(Math.random() * (adIds.length - 1))];
+  const slot = document.getElementById('banner-ad-slot');
+  slot.innerHTML = '';
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://ads-partners.coupang.com/widgets.html?id=${id}&template=carousel&trackingCode=AF8712140&subId=&width=1200&height=140`;
+  iframe.setAttribute('width', '100%');
+  iframe.setAttribute('height', '140');
+  iframe.setAttribute('frameborder', '0');
+  iframe.setAttribute('scrolling', 'no');
+  iframe.setAttribute('referrerpolicy', 'unsafe-url');
+  iframe.style.cssText = 'display:block; width:100%; max-width:1200px;';
+  slot.appendChild(iframe);
+  const coupangUrl = `https://link.coupang.com/re/AFFL?pageKey=${id}&trackingCode=AF8712140&subId=`;
+  document.getElementById('banner-link').href = coupangUrl;
+  const sideLink = document.getElementById('banner-side-link');
+  if (sideLink) sideLink.href = coupangUrl;
+  const banner = document.getElementById('slide-banner');
+  banner.classList.remove('hidden');
+  banner.classList.add('visible');
+  bannerShown = true;
+}
+
+function closeBanner() {
+  const banner = document.getElementById('slide-banner');
+  banner.classList.remove('visible');
+  banner.classList.add('hidden');
+  bannerShown = false;
+  bannerClosed = true;
+  reshowTimer = setTimeout(() => { bannerClosed = false; }, 30000); // 30초 후 재노출 가능
+}
+
+window.addEventListener('scroll', () => {
+  if (bannerShown || bannerClosed) return;
+  const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  if (scrolled >= 0.15) showBanner();
+}, { passive: true });
 </script>
 </body>
 </html>
