@@ -13,36 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Bebas+Neue&family=Inter:wght@700;900&display=swap" rel="stylesheet">
 
 <!-- ✅ 쿠팡 파트너스 -->
-<script>
-(function() {
-  var s = document.createElement('script');
-  s.src = 'https://ads-partners.coupang.com/g.js';
-  s.async = true;
-  s.onload = function() {
-    window._coupangReady = true;
-    if (window._coupangQueue) {
-      window._coupangQueue.forEach(function(el) { runCoupangAd(el); });
-      window._coupangQueue = [];
-    }
-  };
-  document.head.appendChild(s);
-})();
-
-function runCoupangAd(el) {
-  if (!el || el.dataset.loaded) return;
-  el.dataset.loaded = '1';
-  new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"1200","height":"140","tsource":""});
-}
-
-function initCoupangSlot(el) {
-  if (window._coupangReady) {
-    runCoupangAd(el);
-  } else {
-    window._coupangQueue = window._coupangQueue || [];
-    window._coupangQueue.push(el);
-  }
-}
-</script>
+<script src="https://ads-partners.coupang.com/g.js"></script>
 
 <!-- ✅ 애드센스 | ca-pub-XXXXXXXXXXXXXXXX 를 본인 Publisher ID로 교체 후 주석 해제 -->
 <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
@@ -348,7 +319,9 @@ function initCoupangSlot(el) {
 <div class="ad-wrap">
   <div class="ad-wrap-inner">
     <div class="ad-label">AD</div>
-    <div class="coupang-ad-slot" id="coupang-bottom"></div>
+    <script>
+      new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"1200","height":"140","tsource":""});
+    </script>
   </div>
 </div>
 
@@ -499,17 +472,13 @@ function createAdRow() {
     <div class="ad-wrap" style="margin:0;">
       <div class="ad-wrap-inner">
         <div class="ad-label">AD</div>
-        <div class="coupang-ad-slot"></div>
+        <iframe src="https://ads-partners.coupang.com/widgets.html?id=979318&template=carousel&trackingCode=AF8712140&subId=&width=1200&height=140"
+          width="1200" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"
+          style="max-width:100%;"></iframe>
       </div>
     </div>`;
   tr.appendChild(td);
   return tr;
-}
-
-function renderCoupangAds() {
-  document.querySelectorAll('.coupang-ad-slot:not([data-loaded])').forEach(function(slot) {
-    initCoupangSlot(slot);
-  });
 }
 
 function render() {
@@ -542,11 +511,8 @@ function render() {
     prevTier = d.tier;
   });
   if (!activeTier) tbody.appendChild(createAdRow());
-  renderCoupangAds();
 }
 setTier('');
-// 하단 고정 광고 초기화
-initCoupangSlot(document.getElementById('coupang-bottom'));
 </script>
 </body>
 </html>
