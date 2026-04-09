@@ -505,20 +505,22 @@ function render() {
   }
   const isMobile = window.innerWidth <= 768;
   let adRowCount = 0;
-  filtered.forEach((d, i) => {
+  let contentCount = 0; // 순수 콘텐츠 row 카운터 (광고 row 미포함)
+  filtered.forEach((d) => {
     let insertAd = false;
     if (isMobile) {
-      // 모바일: 첫 콘텐츠부터 5개마다 (i=4,9,14... → 5번째 항목 뒤마다 삽입)
-      insertAd = i >= 5 && i % 5 === 0; // 5줄 후 광고, 이후 5줄마다 반복
+      // 모바일: 5번째(10,15,20...) 콘텐츠 앞에 광고 삽입
+      insertAd = contentCount > 0 && contentCount % 5 === 0;
     } else {
       // PC: 첫 광고는 5번째 후, 이후 10개마다
-      if (adRowCount === 0 && i === 5) insertAd = true;
-      else if (adRowCount > 0 && (i - 5) > 0 && (i - 5) % 10 === 0) insertAd = true;
+      if (adRowCount === 0 && contentCount === 5) insertAd = true;
+      else if (adRowCount > 0 && (contentCount - 5) > 0 && (contentCount - 5) % 10 === 0) insertAd = true;
     }
     if (insertAd) {
       tbody.appendChild(createAdRow());
       adRowCount++;
     }
+    contentCount++;
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="rank">${d.rank}</td>
@@ -530,6 +532,13 @@ function render() {
   });
 }
 setTier('');
+
+// 창 크기 변경 시 광고 배치 재계산
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => render(), 200);
+});
 </script>
 </body>
 </html>
