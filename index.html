@@ -10,6 +10,13 @@
 <meta property="og:title" content="리뷰버스(ReviewVerse) - 체험단·리뷰 캠페인 통합 검색 플랫폼">
 <meta property="og:description" content="블로그·인스타·숏폼 체험단 및 리뷰 캠페인을 한눈에! 국내 60개 이상 체험단 사이트 통합 검색 플랫폼">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://dotory122122-cmd.github.io/reviewverse/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="리뷰버스(ReviewVerse) - 체험단·리뷰 캠페인 통합 검색 플랫폼">
+<meta name="twitter:description" content="블로그·인스타·숏폼 체험단 및 리뷰 캠페인을 한눈에! 국내 60개 이상 체험단 사이트 통합 검색 플랫폼">
+<meta name="twitter:image" content="https://dotory122122-cmd.github.io/reviewverse/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Bebas+Neue&family=Inter:wght@700;900&display=swap" rel="stylesheet">
 
 <!-- ✅ 쿠팡 파트너스 -->
@@ -103,7 +110,7 @@
   }
   .brand-tag em { font-style: normal; color: #b8a8d8; }
 
-  .header-search-wrap { position: relative; max-width: 757px; width: 100%; margin: 0 auto; display: flex; gap: 0; }
+  .header-search-wrap { position: relative; max-width: 1200px; width: 100%; margin: 0 auto; display: flex; gap: 0; }
   .header-search-wrap input {
     flex: 1; padding: 11px 16px 11px 42px;
     border: 1px solid rgba(167,120,255,0.2); border-radius: 8px 0 0 8px;
@@ -112,7 +119,7 @@
     transition: border-color 0.2s, background 0.2s;
     backdrop-filter: blur(6px);
   }
-  .header-search-wrap input::placeholder { color: #8b7fa8; }
+  .header-search-wrap input::placeholder { color: #5a5070; }
   .header-search-wrap input:focus { border-color: #a855f7; background: rgba(167,120,255,0.12); }
   .header-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #6b5f85; font-size: 14px; pointer-events: none; z-index: 1; }
   .header-search-btn {
@@ -177,9 +184,6 @@
   .badge-기타   { background: var(--etc-bg); color: var(--etc-text); }
 
   .site-name { font-weight: 500; font-size: 13px; color: var(--text-primary); white-space: nowrap; }
-  .site-name-inner { display: inline-flex; align-items: center; gap: 7px; vertical-align: middle; }
-  .site-favicon { width: 16px; height: 16px; border-radius: 3px; object-fit: contain; display: block; flex-shrink: 0; }
-  .site-favicon-default { width: 16px; height: 16px; border-radius: 3px; background: var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 9px; color: var(--text-muted); }
   .site-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; max-width: 400px; }
   .site-link { display: inline-block; padding: 5px 12px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); text-decoration: none; font-size: 11px; font-weight: 500; white-space: nowrap; transition: all 0.15s; }
   .site-link:hover { background: var(--accent); color: white; }
@@ -528,10 +532,7 @@ function render() {
     tr.innerHTML = `
       <td class="rank">${d.rank}</td>
       <td><span class="tier-badge badge-${d.tier}">${tierMap[d.tier]}</span></td>
-      <td class="site-name"><span class="site-name-inner">${d.url
-        ? `<img class="site-favicon" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(d.url)}&sz=32" alt="" onerror="this.outerHTML='<span class=site-favicon-default>🔗</span>'">`
-        : `<span class="site-favicon-default">🔗</span>`
-      }${d.name}</span></td>
+      <td class="site-name">${d.name}</td>
       <td class="site-desc">${d.desc}</td>
       <td>${d.url ? `<a class="site-link" href="${d.url}" target="_blank" rel="noopener">바로가기 →</a>` : '<span class="no-url">링크 미확인</span>'}</td>`;
     tbody.appendChild(tr);
