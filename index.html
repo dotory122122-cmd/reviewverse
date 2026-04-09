@@ -49,7 +49,7 @@
 
   header {
     background: linear-gradient(135deg, #0d0b14 0%, #1a1625 55%, #221340 100%);
-    color: #f0ecff; padding: 3.5rem 2rem 1.5rem; position: relative; overflow: hidden;
+    color: #f0ecff; padding: 3.5rem 2rem 2rem; position: relative; overflow: hidden;
   }
   header::before {
     content: '';
@@ -99,23 +99,9 @@
   /* 태그라인 */
   .brand-tag {
     font-size: 12.5px; font-weight: 400; color: #9d8fc0;
-    letter-spacing: 0.01em; line-height: 1.6; margin-bottom: 0.9rem;
+    letter-spacing: 0.01em; line-height: 1.6; margin-bottom: 1.5rem;
   }
   .brand-tag em { font-style: normal; color: #b8a8d8; }
-
-  /* 검색바 + 카테고리 함께 sticky 고정 */
-  .search-sticky {
-    position: sticky; top: 0; z-index: 101;
-    background: linear-gradient(180deg, #1a1625 0%, rgba(26,22,37,0.97) 100%);
-    padding: 0.7rem 2rem 0;
-    border-bottom: none;
-    backdrop-filter: blur(8px);
-  }
-  .controls-sticky {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-  }
 
   .header-search-wrap { position: relative; max-width: 1200px; width: 100%; margin: 0 auto; display: flex; gap: 0; }
   .header-search-wrap input {
@@ -140,7 +126,16 @@
   }
   .header-search-btn:hover { opacity: 0.88; }
 
-  .controls { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.6rem 2rem; }
+  /* 검색바 + 필터 sticky 묶음 */
+  .sticky-bar { position: sticky; top: 0; z-index: 100; }
+  .sticky-search {
+    background: linear-gradient(135deg, #0d0b14 0%, #1a1625 55%, #221340 100%);
+    padding: 0.65rem 2rem;
+    border-bottom: 1px solid rgba(167,120,255,0.15);
+  }
+  .sticky-search .header-search-wrap input { background: rgba(167,120,255,0.10); }
+
+  .controls { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.75rem 2rem; }
   .controls-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; }
   .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
   .controls-gap { height: 12px; background: var(--bg); }
@@ -191,8 +186,7 @@
   footer { text-align: center; padding: 2rem; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); letter-spacing: 0.05em; }
 
   @media (max-width: 768px) {
-    header { padding: 2.5rem 1.25rem 1.2rem; }
-    .search-sticky { padding: 0.6rem 1rem 0; }
+    header { padding: 2.5rem 1.25rem 1.75rem; }
     .header-search-wrap { max-width: 100%; }
     .brand-divider { display: none; }
     .brand-wrap { gap: 8px; }
@@ -200,6 +194,9 @@
 
     /* 광고 */
     .ad-wrap { padding: 0; overflow: hidden; }
+
+    /* sticky 검색바 모바일 */
+    .sticky-search { padding: 0.6rem 1rem; }
 
     /* 필터 바 — 가로 스크롤 */
     .controls { padding: 0.6rem 0; }
@@ -274,12 +271,13 @@
   </div>
 </header>
 
-<!-- 검색바 + 카테고리 함께 sticky 고정 -->
-<div class="search-sticky">
-  <div class="header-search-wrap">
-    <span class="header-search-icon">🔍</span>
-    <input type="text" id="kw" placeholder="체험하고 싶은 캠페인 키워드를 입력하세요" oninput="render()" onkeydown="if(event.key==='Enter')render()">
-    <button class="header-search-btn" onclick="render()">검색</button>
+<div class="sticky-bar">
+  <div class="sticky-search">
+    <div class="header-search-wrap">
+      <span class="header-search-icon">🔍</span>
+      <input type="text" id="kw" placeholder="체험하고 싶은 캠페인 키워드를 입력하세요" oninput="render()" onkeydown="if(event.key==='Enter')render()">
+      <button class="header-search-btn" onclick="render()">검색</button>
+    </div>
   </div>
   <div class="controls">
     <div class="controls-inner">
@@ -294,7 +292,6 @@
       </div>
     </div>
   </div>
-  <div class="controls-gap"></div>
 </div>
 
 <main>
@@ -320,15 +317,6 @@
     <tbody id="tbody"></tbody>
   </table>
 </main>
-
-<!-- ✅ 광고: 테이블 하단 쿠팡 파트너스 -->
-<div class="ad-wrap">
-  <div class="ad-wrap-inner">
-    <script>
-      new PartnersCoupang.G({"id":979318,"template":"carousel","trackingCode":"AF8712140","width":"1200","height":"140","tsource":""});
-    </script>
-  </div>
-</div>
 
 <!-- ✅ 애드센스 — 심사 통과 후 아래 주석 해제 + Publisher ID / slot ID 교체
 <div class="ad-wrap">
@@ -464,10 +452,8 @@ function setTier(t) {
   });
   render();
 }
-// 광고 삽입 기준: S→A, A→B 사이 + 마지막
-// 광고 ID: 첫번째는 항상 첫번째, 나머지는 랜덤
+// 광고 ID 풀 — 전체 셔플 후 순서대로 소진, 소진 시 재셔플 (중복 없음)
 const adIds = [979318, 979327, 979328, 979329, 979330, 979331, 979332, 979333, 979334, 979338, 979339];
-let adCallCount = 0;
 let adQueue = [];
 
 function shuffleArray(arr) {
@@ -480,13 +466,7 @@ function shuffleArray(arr) {
 }
 
 function getAdId() {
-  if (adCallCount === 0) {
-    adCallCount++;
-    adQueue = shuffleArray(adIds.slice(1)); // 나머지 미리 셔플
-    return adIds[0]; // 첫번째는 항상 979318 고정
-  }
-  adCallCount++;
-  if (adQueue.length === 0) adQueue = shuffleArray(adIds.slice(1)); // 소진시 재셔플
+  if (adQueue.length === 0) adQueue = shuffleArray(adIds); // 전체 셔플, 소진 시 재셔플
   return adQueue.shift();
 }
 
@@ -519,15 +499,25 @@ function render() {
   document.getElementById('count').textContent = `총 ${filtered.length}개 사이트`;
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = '';
-  adCallCount = 0; // 렌더링마다 카운트 초기화
   if (!filtered.length) {
     tbody.innerHTML = '<tr><td colspan="5" class="empty">검색 결과가 없습니다.</td></tr>';
     return;
   }
+  const isMobile = window.innerWidth <= 768;
+  let adRowCount = 0;
   filtered.forEach((d, i) => {
-    // 5개마다 광고 삽입 (첫번째 행 이후부터)
-    if (i > 0 && i % 5 === 0) {
+    let insertAd = false;
+    if (isMobile) {
+      // 모바일: 첫 콘텐츠부터 5개마다 (i=4,9,14... → 5번째 항목 뒤마다 삽입)
+      insertAd = i >= 5 && i % 5 === 0; // 5줄 후 광고, 이후 5줄마다 반복
+    } else {
+      // PC: 첫 광고는 5번째 후, 이후 10개마다
+      if (adRowCount === 0 && i === 5) insertAd = true;
+      else if (adRowCount > 0 && (i - 5) > 0 && (i - 5) % 10 === 0) insertAd = true;
+    }
+    if (insertAd) {
       tbody.appendChild(createAdRow());
+      adRowCount++;
     }
     const tr = document.createElement('tr');
     tr.innerHTML = `
