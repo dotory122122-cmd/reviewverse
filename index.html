@@ -25,55 +25,9 @@
     border-bottom: 1px solid #ede8f5;
     padding: 0;
     text-align: center;
-    overflow: visible;
-    position: relative;
+    overflow: hidden;
   }
-  .ad-wrap-inner { max-width: 1200px; margin: 0 auto; line-height: 0; font-size: 0; position: relative; }
-
-  /* ⓘ 광고 표시 아이콘 */
-  .ad-info-btn {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: rgba(80,60,120,0.55);
-    color: #e0d8f8;
-    font-size: 11px;
-    font-family: serif;
-    font-style: italic;
-    font-weight: bold;
-    line-height: 18px;
-    text-align: center;
-    cursor: pointer;
-    z-index: 10;
-    user-select: none;
-    border: none;
-    outline: none;
-    transition: background 0.15s;
-  }
-  .ad-info-btn:hover { background: rgba(100,70,180,0.80); }
-
-  .ad-tooltip {
-    display: none;
-    position: absolute;
-    top: 28px;
-    right: 6px;
-    background: #1a1625;
-    color: #c4b5fd;
-    font-size: 11px;
-    font-family: 'Noto Sans KR', sans-serif;
-    line-height: 1.6;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid rgba(167,120,255,0.25);
-    white-space: nowrap;
-    z-index: 20;
-    pointer-events: none;
-    text-align: left;
-  }
-  .ad-tooltip.visible { display: block; }
+  .ad-wrap-inner { max-width: 1200px; margin: 0 auto; line-height: 0; font-size: 0; }
 
   :root {
     --bg: #f8f6fc;
@@ -223,6 +177,9 @@
   .badge-기타   { background: var(--etc-bg); color: var(--etc-text); }
 
   .site-name { font-weight: 500; font-size: 13px; color: var(--text-primary); white-space: nowrap; }
+  .site-name-inner { display: inline-flex; align-items: center; gap: 7px; vertical-align: middle; }
+  .site-favicon { width: 16px; height: 16px; border-radius: 3px; object-fit: contain; display: block; flex-shrink: 0; }
+  .site-favicon-default { width: 16px; height: 16px; border-radius: 3px; background: var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 9px; color: var(--text-muted); }
   .site-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; max-width: 400px; }
   .site-link { display: inline-block; padding: 5px 12px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); text-decoration: none; font-size: 11px; font-weight: 500; white-space: nowrap; transition: all 0.15s; }
   .site-link:hover { background: var(--accent); color: white; }
@@ -498,19 +455,6 @@ function setTier(t) {
   });
   render();
 }
-// 광고 ⓘ 툴팁 토글
-function toggleAdTip(id, e) {
-  e.stopPropagation();
-  const tip = document.getElementById(id);
-  if (!tip) return;
-  const isVisible = tip.classList.contains('visible');
-  document.querySelectorAll('.ad-tooltip.visible').forEach(el => el.classList.remove('visible'));
-  if (!isVisible) tip.classList.add('visible');
-}
-document.addEventListener('click', () => {
-  document.querySelectorAll('.ad-tooltip.visible').forEach(el => el.classList.remove('visible'));
-});
-
 // 광고 ID 풀 — 전체 셔플 후 순서대로 소진, 소진 시 재셔플 (중복 없음)
 const adIds = [979318, 979327, 979328, 979329, 979330, 979331, 979332, 979333, 979334, 979338, 979339];
 let adQueue = [];
@@ -536,15 +480,12 @@ function createAdRow() {
   const td = document.createElement('td');
   td.setAttribute('colspan', '5');
   td.style.cssText = 'padding:0; border:none; line-height:0; font-size:0;';
-  const tooltipId = 'ad-tip-' + id;
   td.innerHTML = `
     <div class="ad-wrap" style="margin:0;">
       <div class="ad-wrap-inner">
         <iframe src="https://ads-partners.coupang.com/widgets.html?id=${id}&template=carousel&trackingCode=AF8712140&subId=&width=1200&height=140"
           width="100%" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"
           style="display:block; width:100%; max-width:1200px;"></iframe>
-        <button class="ad-info-btn" onclick="toggleAdTip('${tooltipId}', event)" aria-label="광고 안내">i</button>
-        <div class="ad-tooltip" id="${tooltipId}">이 광고는 쿠팡 파트너스 활동의 일환으로,<br>이에 따른 일정액의 수수료를 제공받습니다.</div>
       </div>
     </div>`;
   tr.appendChild(td);
@@ -587,7 +528,10 @@ function render() {
     tr.innerHTML = `
       <td class="rank">${d.rank}</td>
       <td><span class="tier-badge badge-${d.tier}">${tierMap[d.tier]}</span></td>
-      <td class="site-name">${d.name}</td>
+      <td class="site-name"><span class="site-name-inner">${d.url
+        ? `<img class="site-favicon" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(d.url)}&sz=32" alt="" onerror="this.outerHTML='<span class=site-favicon-default>🔗</span>'">`
+        : `<span class="site-favicon-default">🔗</span>`
+      }${d.name}</span></td>
       <td class="site-desc">${d.desc}</td>
       <td>${d.url ? `<a class="site-link" href="${d.url}" target="_blank" rel="noopener">바로가기 →</a>` : '<span class="no-url">링크 미확인</span>'}</td>`;
     tbody.appendChild(tr);
